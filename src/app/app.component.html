@@ -1,0 +1,27 @@
+<div class="main-wrapper">
+  <mat-card
+    [ngClass]="{ 'left-expanded': isExpanded, 'left-collapsed': !isExpanded }"
+    class="left-wrapper"
+  >
+    <button
+      mat-icon-button
+      color="accent"
+      aria-label="navigation expansion button"
+      (click)="isExpanded = !isExpanded"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  </mat-card>
+  <mat-card class="right-wrapper">
+    right side
+    <button
+      mat-icon-button
+      color="primary"
+      aria-label="navigation expansion button"
+      (click)="isExpanded = !isExpanded"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <router-outlet></router-outlet>
+  </mat-card>
+</div>

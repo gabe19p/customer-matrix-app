@@ -58,7 +58,7 @@ jobs:
         run: npm install -g @angular/cli
 
       - name: Build the project
-        run: ng build --prod --base-href "https://gabe19p.github.io/customer-matrix-app/"
+        run: ng build --configuration production --base-href "https://gabe19p.github.io/customer-matrix-app/"
 
       - name: Verify the build output
         run: ls -la ./dist/customer-matrix-app

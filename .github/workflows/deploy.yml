@@ -22,7 +22,8 @@ jobs:
         run: npm install
 
       - name: Build the project
-        run: npm run build -- --output-path=dist/customer-matrix-app --base-href /customer-matrix-app/
+        # run: npm run build -- --output-path=dist/customer-matrix-app --base-href /customer-matrix-app/
+        run: ng build --prod --base-href "https://gabe19p.github.io/customer-matrix-app/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

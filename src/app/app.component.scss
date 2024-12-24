@@ -21,16 +21,25 @@ body {
 }
 
 .left-wrapper {
-  background-color: $background-dark-gray;
-  width: 200px;
+  background-color: $background-light-indigo;
+  max-width: 200px; // Set max-width for transition
+  width: 100%;
   border-radius: 5px;
-  transition: width 0.3s ease; // Smooth transition for width change
+  transition: max-width 0.3s ease; // Smooth transition for max-width change
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  align-items: center; // Center align the children
+  justify-content: space-between;
 }
+
 .left-expanded {
-  width: 200px; // Expanded width
+  max-width: 150px; // Expanded max-width
 }
+
 .left-collapsed {
-  width: 50px; // Collapsed width
+  max-width: 60px; // Collapsed max-width, adjust as needed
 }
 
 .right-wrapper {
@@ -41,4 +50,21 @@ body {
 
 mat-card-content {
   flex-grow: 1; // Allow the content to expand
+}
+
+.button-wrapper {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.mat-button-with-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.mat-button {
+  width: 100%;
 }

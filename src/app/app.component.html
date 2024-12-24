@@ -3,25 +3,119 @@
     [ngClass]="{ 'left-expanded': isExpanded, 'left-collapsed': !isExpanded }"
     class="left-wrapper"
   >
-    <button
-      mat-icon-button
-      color="accent"
-      aria-label="navigation expansion button"
-      (click)="isExpanded = !isExpanded"
-    >
-      <mat-icon>menu</mat-icon>
-    </button>
+    <div class="top-buttons-wrapper">
+      <!-- menu button -->
+      <div class="button-wrapper" style="justify-content: center">
+        <button
+          mat-icon-button
+          color="primary"
+          aria-label="navigation expansion button"
+          (click)="isExpanded = !isExpanded"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+
+      <!-- dashboard button -->
+      <div class="button-wrapper" style="justify-content: center">
+        <ng-container *ngIf="isExpanded; else iconButtonDashboard">
+          <button
+            mat-button
+            color="primary"
+            aria-label="dashboard link button"
+            class="mat-button-with-icon"
+            routerLink="/dashboard"
+          >
+            <mat-icon class="icon-fixed-size">dashboard</mat-icon>
+            <span>Dashboard</span>
+          </button>
+        </ng-container>
+        <ng-template #iconButtonDashboard>
+          <button
+            mat-icon-button
+            color="primary"
+            aria-label="dashboard link button"
+            routerLink="/dashboard"
+          >
+            <mat-icon>dashboard</mat-icon>
+          </button>
+        </ng-template>
+      </div>
+
+      <!-- list button -->
+      <div class="button-wrapper" style="justify-content: center">
+        <ng-container *ngIf="isExpanded; else iconButtonList">
+          <button
+            mat-button
+            color="primary"
+            aria-label="customer list link button"
+            class="mat-button-with-icon"
+            routerLink="customers"
+          >
+            <mat-icon class="icon-fixed-size">people</mat-icon>
+            <span>Customers</span>
+          </button>
+        </ng-container>
+        <ng-template #iconButtonList>
+          <button
+            mat-icon-button
+            color="primary"
+            aria-label="customer list link button"
+            routerLink="/customers"
+          >
+            <mat-icon>people</mat-icon>
+          </button>
+        </ng-template>
+      </div>
+
+      <!-- map/locations button -->
+      <div class="button-wrapper" style="justify-content: center">
+        <ng-container *ngIf="isExpanded; else iconButtonMap">
+          <button
+            mat-button
+            color="primary"
+            aria-label="map link button"
+            class="mat-button-with-icon"
+          >
+            <mat-icon class="icon-fixed-size">map</mat-icon>
+            <span>Locations</span>
+          </button>
+        </ng-container>
+        <ng-template #iconButtonMap>
+          <button mat-icon-button color="primary" aria-label="map link button">
+            <mat-icon>map</mat-icon>
+          </button>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="bottom-buttons-wrapper">
+      <!-- add customer button -->
+      <div class="custom-button-wrapper" style="justify-content: center">
+        <ng-container *ngIf="isExpanded; else iconButtonAddCustomer">
+          <button
+            mat-raised-button
+            color="accent"
+            aria-label="add customer button"
+            class="mat-button-with-icon"
+          >
+            <mat-icon>add</mat-icon>
+            <span>Customer</span>
+          </button>
+        </ng-container>
+        <ng-template #iconButtonAddCustomer>
+          <button
+            mat-mini-fab
+            color="accent"
+            aria-label="add new customer button"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </ng-template>
+      </div>
+    </div>
   </mat-card>
   <mat-card class="right-wrapper">
-    right side
-    <button
-      mat-icon-button
-      color="primary"
-      aria-label="navigation expansion button"
-      (click)="isExpanded = !isExpanded"
-    >
-      <mat-icon>menu</mat-icon>
-    </button>
     <router-outlet></router-outlet>
   </mat-card>
 </div>

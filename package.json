@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:customer-matrix-app": "node dist/customer-matrix-app/server/server.mjs"
+    "serve:ssr:customer-matrix-app": "node dist/customer-matrix-app/server/server.mjs",
+    "server": "nodemon ./server/index.js"
   },
   "private": true,
   "dependencies": {
@@ -23,8 +24,15 @@
     "@angular/platform-server": "^18.1.0",
     "@angular/router": "^18.1.0",
     "@angular/ssr": "^18.1.4",
-    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.7.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "http": "^0.0.1-security",
+    "mongoose": "^8.9.2",
     "rxjs": "~7.8.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },
@@ -42,6 +50,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "nodemon": "^3.1.4",
     "typescript": "~5.5.2"
   }
 }

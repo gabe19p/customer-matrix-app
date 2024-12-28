@@ -8,3 +8,6 @@ bootstrapApplication(AppComponent, appConfig).catch((err) =>
 
 // npm run build -- --output-path=dist/customer-matrix-app --base-href /customer-matrix-app/
 // ng deploy --base-href=https://gabe19p.github.io/customer-matrix-app/
+
+// attempting publish
+// step 1 - ng build --configuration production

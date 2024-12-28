@@ -37,15 +37,12 @@ router.get("/locations", async (req, res) => {
  *       - Location
  *     description: Create a new location
  *     requestBody:
- *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Okinawa"
  *     responses:
  *       '201':
  *         description: Location created successfully
@@ -55,11 +52,27 @@ router.get("/locations", async (req, res) => {
  *         description: Server error
  */
 router.post("/locations", async (req, res) => {
+  const { name } = req.body;
+
+  // Validate that the name is provided
+  if (!name) {
+    return res.status(400).send({ message: "Name is required" });
+  }
+
   try {
-    const { name } = req.body;
-    const location = new Location({ name });
-    await location.save();
-    res.status(201).json(location);
+    let locationData = { name };
+
+    await Location.create(locationData)
+      .then((createdLocation) => {
+        console.log(`Locations created: ${req.name}`);
+        res.status(201).json(createdLocation);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(501).send({
+          message: `MongoDB Error: ${err}`,
+        });
+      });
   } catch (err) {
     console.error(err);
     res.status(500).send({ message: `Server Error: ${err.message}` });
@@ -169,7 +182,7 @@ router.delete("/locations/:id", async (req, res) => {
  */
 router.get("/bases", async (req, res) => {
   try {
-    const bases = await Base.find().populate("location");
+    const bases = await Base.find();
     res.status(200).json(bases);
   } catch (err) {
     console.error(err);
@@ -193,10 +206,8 @@ router.get("/bases", async (req, res) => {
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Kadena Air Base"
  *               locationName:
  *                 type: string
- *                 example: "Okinawa, Japan"
  *     responses:
  *       '201':
  *         description: Base created successfully
@@ -208,85 +219,28 @@ router.get("/bases", async (req, res) => {
  *         description: Server error
  */
 router.post("/bases", async (req, res) => {
-  const name = req.body.name;
-  const locationName = req.body.locationName;
+  const baseData = {
+    name: req.body.name,
+    locationName: req.body.locationName,
+  };
 
   try {
-    // Check if the location exists by name
-    const locationExists = await Location.findOne({ name: locationName });
-
-    // If location doesn't exist, send error response
-    if (!locationExists) {
-      return res
-        .status(400)
-        .json({ message: `Location "${locationName}" does not exist.` });
-    }
-
-    // Create the base with locationName directly
-    const newBase = new Base({
-      name: name,
-      locationName: locationName, // Store locationName directly as a string
-    });
-
-    // Save the base to the database
-    await newBase.save();
+    await Base.create(baseData)
+      .then((createdBase) => {
+        console.log(`Base created! ${createdBase}`);
+        res.status(201).json(createdBase);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(501).send({
+          message: `MongoDB Error: ${err}`,
+        });
+      });
 
     // Send the newly created base as the response
-    res.status(201).json(newBase);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: `Server Error: ${error.message}` });
-  }
-});
-
-/**
- * @openapi
- * /api/bases/{id}:
- *   put:
- *     tags:
- *       - Base
- *     description: Update a base by ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: The ID of the base to update
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: "Kadena AB"
- *     responses:
- *       '200':
- *         description: Base updated successfully
- *       '404':
- *         description: Base not found
- *       '500':
- *         description: Server error
- */
-router.put("/bases/:id", async (req, res) => {
-  const { id } = req.params;
-  const { name, locationId } = req.body;
-  try {
-    const base = await Base.findByIdAndUpdate(
-      id,
-      { name, location: locationId },
-      { new: true }
-    );
-    if (!base) {
-      return res.status(404).json({ message: "Base not found" });
-    }
-    res.status(200).json(base);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: `Server Error: ${err.message}` });
   }
 });
 
@@ -326,7 +280,9 @@ router.delete("/bases/:id", async (req, res) => {
   }
 });
 
+//
 // Similar CRUD for Unit
+//
 /**
  * @openapi
  * /api/units:
@@ -342,7 +298,7 @@ router.delete("/bases/:id", async (req, res) => {
  */
 router.get("/units", async (req, res) => {
   try {
-    const units = await Unit.find().populate("base");
+    const units = await Unit.find();
     res.status(200).json(units);
   } catch (err) {
     console.error(err);
@@ -366,10 +322,13 @@ router.get("/units", async (req, res) => {
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Air Force"
+ *                 example: "123 Sq"
  *               baseName:
  *                 type: string
- *                 example: "Kadena Air Base"
+ *                 example: "Kadena AB"
+ *               locationName:
+ *                 type: string
+ *                 example: "Okinawa"
  *     responses:
  *       '201':
  *         description: Unit created successfully
@@ -381,26 +340,25 @@ router.get("/units", async (req, res) => {
  *         description: Server error
  */
 router.post("/units", async (req, res) => {
-  const { name, baseName } = req.body;
-
   try {
-    // Check if the base exists
-    const base = await Base.findOne({ name: baseName });
-
-    if (!base) {
-      return res
-        .status(404)
-        .json({ message: `Base "${baseName}" not found. Cannot create unit.` });
-    }
-
     // Create the unit with the found base's ID
-    const unit = new Unit({
-      name,
-      base: base._id,
-    });
+    const unitData = {
+      name: req.body.name,
+      baseName: req.body.baseName,
+      locationName: req.body.locationName,
+    };
 
-    await unit.save();
-    res.status(201).json(unit);
+    await Unit.create(unitData)
+      .then((createdUnit) => {
+        console.log(`Unit create: ${createdUnit}`);
+        res.status(201).json(createdUnit);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(501).send({
+          message: `MongoDB Error: ${err}`,
+        });
+      });
   } catch (err) {
     console.error(err);
     res.status(500).send({ message: `Server Error: ${err.message}` });

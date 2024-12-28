@@ -5,7 +5,11 @@ const unitSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  base: {
+  baseName: {
+    type: String,
+    required: true,
+  },
+  locationName: {
     type: String,
     required: true,
   },

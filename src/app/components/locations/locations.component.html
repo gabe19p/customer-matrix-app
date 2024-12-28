@@ -1,12 +1,122 @@
-<p>locations works!</p>
+<div class="location-wrapper">
+  <!-- Card for Adding a Location -->
+  <mat-card class="location-card">
+    <mat-card-header>
+      <mat-card-title>Add a New Location</mat-card-title>
+    </mat-card-header>
 
-<mat-table [dataSource]="locations" class="mat-elevation-z8">
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-    <mat-cell *matCellDef="let location"> {{ location.name }} </mat-cell>
-  </ng-container>
+    <mat-card-content>
+      <!-- Add New Location Form -->
+      <mat-form-field>
+        <mat-label>New Location</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newLocation"
+          placeholder="Enter new location"
+        />
+      </mat-form-field>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-</mat-table>
+      <button mat-raised-button (click)="addLocation()">Add Location</button>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Card for Selecting Location and Base -->
+  <mat-card class="selection-card">
+    <mat-card-header>
+      <mat-card-title>Select Location and Base</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Locations Dropdown for Selecting Location -->
+      <mat-form-field>
+        <mat-label>Select Location</mat-label>
+        <mat-select
+          [(ngModel)]="selectedLocation"
+          placeholder="Choose a location"
+        >
+          <mat-option *ngFor="let location of locations" [value]="location">
+            {{ location }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Base Dropdown for the Selected Location -->
+      <mat-form-field *ngIf="selectedLocation">
+        <mat-label>Select Base</mat-label>
+        <mat-select [(ngModel)]="selectedBase" placeholder="Choose a base">
+          <mat-option *ngFor="let base of getBasesForLocation()" [value]="base">
+            {{ base }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Add New Base Form -->
+      <mat-form-field>
+        <mat-label>Base Name</mat-label>
+        <input matInput [(ngModel)]="baseName" placeholder="Enter base name" />
+      </mat-form-field>
+
+      <button mat-raised-button (click)="addBase()">Add Base</button>
+
+      <!-- Add New Unit Form -->
+      <mat-form-field *ngIf="selectedBase">
+        <mat-label>Unit Name</mat-label>
+        <input matInput [(ngModel)]="unitName" placeholder="Enter unit name" />
+      </mat-form-field>
+
+      <button mat-raised-button (click)="addUnit()">Add Unit</button>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Card for Locations Table -->
+  <mat-card class="locations-table-card">
+    <mat-card-header>
+      <mat-card-title>Locations</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-table [dataSource]="locations" class="mat-elevation-z8">
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef> Locations </mat-header-cell>
+          <mat-cell *matCellDef="let location">{{ location }}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="['name']"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: ['name']"></mat-row>
+      </mat-table>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Card for Bases Table -->
+  <mat-card class="bases-table-card">
+    <mat-card-header>
+      <mat-card-title>Bases</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-table
+        [dataSource]="locationBases[selectedLocation]"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="baseName">
+          <mat-header-cell *matHeaderCellDef> Base Name </mat-header-cell>
+          <mat-cell *matCellDef="let base">{{ base.name }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="units">
+          <mat-header-cell *matHeaderCellDef> Units </mat-header-cell>
+          <mat-cell *matCellDef="let base">
+            <ul>
+              <li *ngFor="let unit of base.units">{{ unit }}</li>
+            </ul>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="['baseName', 'units']"
+        ></mat-header-row>
+        <mat-row *matRowDef="let row; columns: ['baseName', 'units']"></mat-row>
+      </mat-table>
+    </mat-card-content>
+  </mat-card>
+</div>
